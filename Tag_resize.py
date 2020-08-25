@@ -1,6 +1,6 @@
 # Author: Xuechao Zhang
 # Date: Aug 25th, 2020
-# Description: Apriltag 图片缩放处理
+# Description: AprilTag 缩放处理
 
 import os
 import sys

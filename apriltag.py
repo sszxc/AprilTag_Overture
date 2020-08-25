@@ -1,6 +1,6 @@
 # Author: Xuechao Zhang
 # Date: Aug 25th, 2020
-# Description: Apriltag 识别复现
+# Description: AprilTag 识别复现
 
 import os
 import sys
