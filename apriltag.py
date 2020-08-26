@@ -17,12 +17,10 @@ if __name__ == "__main__":
 
     print(random.randint(0, 9))
 
-    path = "test"
+    path = "test_img"
     random_filename = random.choice([x for x in os.listdir(path)])
     print(path + "/" + random_filename)
     img_raw = cv2.imread(path + "/" + random_filename)
-    sp = img_raw.shape  # 看看大小
-    print("img_size:" + str(sp))
     cv2.imshow('image', img_raw)
 
     # # 计时开始
