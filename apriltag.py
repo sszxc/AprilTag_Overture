@@ -10,6 +10,16 @@ import datetime
 import numpy as np
 from matplotlib import pyplot as plt
 
+def img_test():
+    path = "test_img"
+    random_filename = random.choice([x for x in os.listdir(path)])
+    print(path + "/" + random_filename)
+    img_raw = cv2.imread(path + "/" + random_filename)
+    cv2.imshow('image', img_raw)
+    
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 if __name__ == "__main__":
     print("")
     print("Python.version: "+sys.version)
@@ -17,11 +27,7 @@ if __name__ == "__main__":
 
     print(random.randint(0, 9))
 
-    path = "test_img"
-    random_filename = random.choice([x for x in os.listdir(path)])
-    print(path + "/" + random_filename)
-    img_raw = cv2.imread(path + "/" + random_filename)
-    cv2.imshow('image', img_raw)
+    img_test()
 
     # # 计时开始
     # starttime = datetime.datetime.now()
@@ -34,5 +40,4 @@ if __name__ == "__main__":
     # print(endtime - starttime)
     # print('')
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+
