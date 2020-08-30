@@ -1,5 +1,7 @@
 # AprilTag_Overture
 
-AprilTag 论文学习复现
+AprilTag 论文学习与复现
 
-August 2020
+https://april.eecs.umich.edu/software/apriltag
+
+August, 2020
