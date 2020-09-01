@@ -32,7 +32,7 @@ def detect(frame):
     """
     3 find contours
     """
-    img_after, contours, hierarchy = cv2.findContours(canny, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    _, contours, hierarchy = cv2.findContours(canny, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
     """
     4 compute convex hulls and find maximum inscribed quadrilaterals
