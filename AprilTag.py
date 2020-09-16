@@ -1,6 +1,7 @@
 # Author: Xuechao Zhang
 # Date: Aug 25th, 2020
 # Description: AprilTag 识别复现
+#   https://github.com/BlackJocker1995/Apriltag_python
 
 import os
 import sys
@@ -41,13 +42,13 @@ def detect(frame, debug = False):
     quads = []  # array of quad including four peak points
     hulls = []
     for i in range(len(contours)):
-        if (hierarchy[0, i, 3] < 0 and contours[i].shape[0] >= 4):  # 第i个轮廓不存在父轮廓？ 且其中的点多于4个
+        if (hierarchy[0, i, 3] < 0 and contours[i].shape[0] >= 4):  # 第i个轮廓不存在父轮廓？ 且其中的点（边）多于4个
             area = cv2.contourArea(contours[i]) # 计算面积
             if area > 400:
                 hull = cv2.convexHull(contours[i]) # 计算凸包
                 if (area / cv2.contourArea(hull) > 0.8): # 要求不凹太多
                     hulls.append(hull)
-                    quad = cv2.approxPolyDP(hull, 8, True)  # 多边形拟合 平滑处理 (# maximum_area_inscribed)
+                    quad = cv2.approxPolyDP(hull, 8, True)  # 道格拉斯-普克算法(Douglas-Peucker algorithm) 多边形拟合 (# maximum_area_inscribed)
                     if (len(quad) == 4):
                         areaqued = cv2.contourArea(quad)
                         areahull = cv2.contourArea(hull)
