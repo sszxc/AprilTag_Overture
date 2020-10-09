@@ -22,7 +22,7 @@ if __name__ == "__main__":
     img_raw = cv2.imread(path + "/" + random_filename)
     sp = img_raw.shape # 看看大小
     print("img_size:" + str(sp))
-    multiple = 40
+    multiple = 40 # 放大
     img_resize = cv2.resize(img_raw, (sp[1] * multiple, sp[0] * multiple), interpolation=cv2.INTER_NEAREST)
         
     cv2.imshow('image', img_resize)
