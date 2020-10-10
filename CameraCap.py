@@ -15,17 +15,17 @@ if __name__ == "__main__":
         starttime = time.time()
         ret, frame = cap.read()  # 读取图像的每一帧
         if ret == True:
-            quads, hulls = ap.detect(frame, False)
+            quads, hulls = ap.detect(frame, False) # 检测过程
             cv2.drawContours(frame, quads, -1, (0, 255, 0), 2)
             
-            cv2.putText(frame, "FPS:"+str(fps_real), (0, 25), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
+            cv2.putText(frame, "FPS:" + str(fps_real), (0, 25), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
             cv2.imshow('frame', frame)  # 显示帧
 
             #等待1毫秒，判断此期间有无按键按下，以及按键的值是否是Esc键
             if cv2.waitKey(1000//int(fps)) & 0xFF == 27:
                 break
         else:
-            print ("cap fail")
+            print ("Cap failed!")
             break
 
         endtime = time.time()

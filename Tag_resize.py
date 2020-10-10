@@ -1,6 +1,6 @@
 # Author: Xuechao Zhang
 # Date: Aug 25th, 2020
-# Description: AprilTag 随机取一张图，最近邻插值放大
+# Description: AprilTag 随机取一张图 最近邻插值放大
 
 import os
 import sys
@@ -19,7 +19,10 @@ if __name__ == "__main__":
         if (os.path.splitext(x)[0][:3] == "tag" and \
             os.path.splitext(x)[-1][1:] == "png")])  # 选择开头为tag的png图片
     print(path + "/" + random_filename)
-    img_raw = cv2.imread(path + "/" + random_filename)
+    # img_raw = cv2.imread(path + "/" + random_filename)
+    
+    img_raw = cv2.imread("tag36h11/tag36_11_00002.png")
+
     sp = img_raw.shape # 看看大小
     print("img_size:" + str(sp))
     multiple = 40 # 放大
