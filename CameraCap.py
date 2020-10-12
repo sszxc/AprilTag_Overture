@@ -5,9 +5,11 @@
 import cv2
 import time
 from AprilTag import Apriltag
+import tagUtils as tud
 
 if __name__ == "__main__":
     ap = Apriltag()
+    ap.create_detector(debug=False)
     cap = cv2.VideoCapture(0)
     fps_real = fps = 24
     
@@ -15,8 +17,17 @@ if __name__ == "__main__":
         starttime = time.time()
         ret, frame = cap.read()  # 读取图像的每一帧
         if ret == True:
-            quads, hulls = ap.detect(frame, False) # 检测过程
+            quads, detections = ap.detect(frame)  # 检测过程
             cv2.drawContours(frame, quads, -1, (0, 255, 0), 2)
+            print(detections)
+
+            for detection in detections:
+                point = tud.get_pose_point(detection.homography)
+                dis = round(tud.get_distance(detection.homography, 55000),2)  # 边长55mm标签
+                center_x = int(sum(point[:, 0]) / 4)
+                center_y = int(sum(point[:, 1]) / 4)
+                cv2.putText(frame, str(dis)+"mm", (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
+
             
             cv2.putText(frame, "FPS:" + str(fps_real), (0, 25), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
             cv2.imshow('frame', frame)  # 显示帧

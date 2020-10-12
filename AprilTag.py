@@ -17,12 +17,12 @@ class Apriltag(object):
         '''
         init what kind of tag you will detect
         '''
-        self._downsampling = downsampling
-        self._quad_sigma = sigma
-        self._nthread = nthread
+        # self._downsampling = downsampling
+        # self._quad_sigma = sigma
+        # self._nthread = nthread
         self._minarea = minarea
-        self._debug = debug
-        self._thresholding = thresholding
+        self._debug = debug # 调试模式 显示一些中间图像
+        # self._thresholding = thresholding
         if(family == 'tag36h11'):
             self.tagfamily = tf.Tag36h11class(debug=self._debug)
         elif(family == 'tag25h9'):
@@ -35,7 +35,6 @@ class Apriltag(object):
     def detect(self, frame):
         """
         frame 输入图像
-        debug 显示调试窗口
         """
         gray = np.array(cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY))    
 
@@ -65,7 +64,7 @@ class Apriltag(object):
         for i in range(len(contours)):
             if (hierarchy[0, i, 3] < 0 and contours[i].shape[0] >= 4):  # 第i个轮廓不存在父轮廓？ 且其中的点（边）大于等于4个
                 area = cv2.contourArea(contours[i]) # 计算面积
-                if area > 400:
+                if area > self._minarea:
                     hull = cv2.convexHull(contours[i]) # 计算凸包
                     if (area / cv2.contourArea(hull) > 0.8):  # 要求不凹太多
                         hulls.append(hull)
