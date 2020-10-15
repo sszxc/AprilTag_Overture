@@ -10,6 +10,7 @@ import random
 import numpy as np
 from matplotlib import pyplot as plt
 import tagFamilies as tf
+import tagUtils as tud
 
 class Apriltag(object):
 
@@ -92,7 +93,8 @@ class Apriltag(object):
         """
         在指定路径下随机选一张测试图片
         """        
-        random_filename = random.choice([x for x in os.listdir(path)])
+        # random_filename = random.choice([x for x in os.listdir(path)])
+        random_filename = "0009_color.jpg"
         # print(path + "/" + random_filename)        
         img_raw = cv2.imread(path + "/" + random_filename)
         return img_raw, random_filename
@@ -106,13 +108,12 @@ if __name__ == "__main__":
     while (True):
         img, _ = ap.img_test()
         quads, detections = ap.detect(img)
-        print(detections)
+        # print(detections)
 
         cv2.drawContours(img, quads, -1, (0, 255, 0), 2)
+        img = tud.set_coordinate(img, detections)
+        
         cv2.imshow('quads', img)
-        # imgcopy = np.copy(img)
-        # cv2.drawContours(imgcopy, hulls, -1, (0, 255, 0), 2)
-        # cv2.imshow('hulls', imgcopy)
         if cv2.waitKey(0) & 0xFF == 27: # 等待按键 如果是Esc退出
             break
 

@@ -31,6 +31,7 @@ class TagDetection(object):
 
     def _recomputeHomography(self):
         """
+        从单位矩形到像素坐标下目标矩形的变换矩阵
         find Homography
         :return: Homography
         """

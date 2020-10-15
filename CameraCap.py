@@ -19,16 +19,10 @@ if __name__ == "__main__":
         if ret == True:
             quads, detections = ap.detect(frame)  # 检测过程
             cv2.drawContours(frame, quads, -1, (0, 255, 0), 2)
-            print(detections)
-
-            for detection in detections:
-                point = tud.get_pose_point(detection.homography)
-                dis = round(tud.get_distance(detection.homography, 55000),2)  # 边长55mm标签
-                center_x = int(sum(point[:, 0]) / 4)
-                center_y = int(sum(point[:, 1]) / 4)
-                cv2.putText(frame, str(dis)+"mm", (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
-
+            # print(detections)            
             
+            cv2.drawContours(frame, quads, -1, (0, 255, 0), 2)
+            frame = tud.set_coordinate(frame, detections)
             cv2.putText(frame, "FPS:" + str(fps_real), (0, 25), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
             cv2.imshow('frame', frame)  # 显示帧
 

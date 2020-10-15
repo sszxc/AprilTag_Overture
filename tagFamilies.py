@@ -17,6 +17,7 @@ class Tagclass(object):
 
     def _interpolate(self,p, relativePoint):
         """
+        码坐标0~1 → 图像坐标
         calculate real points accoding relative points
         :param p: quad` four points
         :param relativePoint: relative points
@@ -123,7 +124,7 @@ class Tagclass(object):
     def decodeQuad(self, quads, gray):
         """
         decode the Quad
-        :param quads: array of quad which have four points
+        :param quads: array of quad which have four points 检测出的矩形
         :param gray: gray picture
         :return: array of detection
         """
@@ -131,39 +132,39 @@ class Tagclass(object):
         points = []
         whitepoint = []
         for quad in quads:
-            dd = 2 * self._blackBorder + self._d  # tagFamily.d
+            dd = 2 * self._blackBorder + self._d  # tagFamily.d # 矩形的边长 边界加上码的大小
             blackvalue = []
             whitevalue = []
             tagcode = 0
-            for iy in range(dd):
+            for iy in range(dd): # 统计格点亮度 找黑白阈值
                 for ix in range(dd):
-                    x = (ix + 0.5) / dd
+                    x = (ix + 0.5) / dd # x, y ∈ (0,1)
                     y = (iy + 0.5) / dd
-                    point = np.int32(self._interpolate(quad, (x, y)))
+                    point = np.int32(self._interpolate(quad, (x, y))) # 转完之后好像是从右往左 从下往上
                     points.append(point)
                     value = gray[point[0], point[1]]
                     if ((iy == 0 or iy == dd - 1) or (ix == 0 or ix == dd - 1)):
-                        blackvalue.append(value)
+                        blackvalue.append(value) # 最外圈全黑
                     elif ((iy == 1 or iy == dd - 2) or (ix == 1 or ix == dd - 2)):
-                        whitevalue.append(value)
+                        whitevalue.append(value) # 但为什么内圈都算白色的呢
                     else:
                         continue
             threshold = (np.average(blackvalue) + np.average(whitevalue)) / 2
             for iy in range(dd):
                 for ix in range(dd):
                     if ((iy == 0 or iy == dd - 1) or (ix == 0 or ix == dd - 1)):
-                        continue
+                        continue # 边界不用看
                     x = (ix + 0.5) / dd
                     y = (iy + 0.5) / dd
                     point = np.int32(self._interpolate(quad, (x, y)))
-                    value = gray[point[0], point[1]]
+                    value = gray[point[0], point[1]] # 在真实图像中找到灰度值
                     tagcode = tagcode << 1
                     if value > threshold:
                         if(self._debug):
                             whitepoint.append(point)
-                        tagcode |= 1
+                        tagcode |= 1 # 按位或
             tagcode = hex(tagcode)
-            detection = self._decode(tagcode, quad)
+            detection = self._decode(tagcode, quad) # 暴力匹配 返回阈值内最接近的码
             if detection.good == True:
                 detection.addHomography()
                 detections.append(detection)

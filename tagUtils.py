@@ -2,6 +2,11 @@
 # E-Mail: raindown95@outlook.com
 # Link: https://github.com/BlackJocker1995/Apriltag_python
 
+# 相机标定 Oct 15th
+# 1103.26946498287	0	0
+# 0	1102.68487162187	0
+# 347.415754825587	269.670874761139	1
+
 import numpy as np
 import cv2
 import math
@@ -12,9 +17,12 @@ src = np.array([[-ss, -ss, 0],
                     [ss, ss, 0],
                     [-ss, ss, 0]])
 #500 is scale
-Kmat = np.array([[700, 0, 0],
-                     [0, 700, 0],
-                     [0, 0, 1]]) * 1.0
+# Kmat = np.array([[700, 0, 0],
+#                      [0, 700, 0],
+#                      [0, 0, 1]])* 1.0
+Kmat = np.array([[1103.26946498287, 0, 347.415754825587],
+                 [0, 1102.68487162187, 269.670874761139],
+                 [0, 0, 1]])
 disCoeffs= np.zeros([4, 1]) * 1.0
 edges = np.array([[0, 1],
                               [1, 2],
@@ -89,8 +97,8 @@ def get_pose_point_noroate(H):
 def average_dis(point,k):
     return np.abs( k/np.linalg.norm(point[0] - point[1]))
 def average_pixel(point):
-    return  np.abs( np.linalg.norm(point[0] - point[1]))
-def get_distance(H,t):
+    return np.abs( np.linalg.norm(point[0] - point[1]))
+def get_distance(H,t): # 没怎么看懂 四个点只取走了两个 还用的二范数 t很像比例系数
     points = get_pose_point_noroate(H)
     return average_dis(points,t)
 def get_min_distance(array_detections,t):
@@ -106,3 +114,25 @@ def get_pixel(H):
     points = get_pose_point_noroate(H)
     return average_pixel(points)
 
+
+def set_coordinate(img, detections):
+    tag_id = []
+    center_list = []
+    for detection in detections:
+        tag_id.append(detection.id)
+        point = get_pose_point(detection.homography)  # 用拟合出的变换矩阵再求一次角点
+        # dis = round(get_distance(detection.homography, 122274), 2)
+        dis = round(get_distance(detection.homography, 55000),2)  # 边长55mm标签
+        center_x = int(sum(point[:, 0]) / 4)
+        center_y = int(sum(point[:, 1]) / 4)
+        center_list.append(np.array([center_x, center_y]))
+        
+        cv2.putText(img, str(detection.id) + ":" + str(dis) + "mm", (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
+    line = []
+    if 0 in tag_id and 1 in tag_id:
+        line.append(np.array([center_list[tag_id.index(0)],  center_list[tag_id.index(1)]], np.int32).reshape((-1, 1, 2)))
+    if 1 in tag_id and 2 in tag_id:
+        line.append(np.array([center_list[tag_id.index(1)],  center_list[tag_id.index(2)]], np.int32).reshape((-1, 1, 2)))
+    if line:
+        cv2.polylines(img, line, True, (0, 255, 255), 2)
+    return img
