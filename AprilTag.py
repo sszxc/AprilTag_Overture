@@ -111,7 +111,7 @@ if __name__ == "__main__":
         # print(detections)
 
         cv2.drawContours(img, quads, -1, (0, 255, 0), 2)
-        img = tud.set_coordinate(img, detections)
+        frame, tag_list = tud.set_coordinate(img, detections)
         
         cv2.imshow('quads', img)
         if cv2.waitKey(0) & 0xFF == 27: # 等待按键 如果是Esc退出

@@ -1,28 +1,32 @@
 # Author:rain
 # E-Mail: raindown95@outlook.com
 # Link: https://github.com/BlackJocker1995/Apriltag_python
-
-# 相机标定 Oct 15th
-# 1103.26946498287	0	0
-# 0	1102.68487162187	0
-# 347.415754825587	269.670874761139	1
+# Description: AprilTag的一些功能函数
+#               包括像素坐标系到相机坐标系的转换
 
 import numpy as np
 import cv2
 import math
 from scipy.optimize import fsolve
+
+# 相机内参 Oct 15th
+# 1103.26946498287	0	0
+# 0	1102.68487162187	0
+# 347.415754825587	269.670874761139	1
+Kmat = np.array([[1103.26946498287, 0, 347.415754825587],
+                 [0, 1102.68487162187, 269.670874761139],
+                 [0, 0, 1]])
+
 ss = 0.5
 src = np.array([[-ss, -ss, 0],
                     [ss, -ss, 0],
                     [ss, ss, 0],
                     [-ss, ss, 0]])
 #500 is scale
+# 原作者内参
 # Kmat = np.array([[700, 0, 0],
 #                      [0, 700, 0],
 #                      [0, 0, 1]])* 1.0
-Kmat = np.array([[1103.26946498287, 0, 347.415754825587],
-                 [0, 1102.68487162187, 269.670874761139],
-                 [0, 0, 1]])
 disCoeffs= np.zeros([4, 1]) * 1.0
 edges = np.array([[0, 1],
                               [1, 2],
@@ -114,8 +118,17 @@ def get_pixel(H):
     points = get_pose_point_noroate(H)
     return average_pixel(points)
 
+def pixel2camera(center_x, center_y, dis):
+    """
+    像素坐标系转换到相机坐标系
+    """
+    coord = np.matmul(np.linalg.inv(Kmat) * dis, np.array([[center_x, center_y, 1]]).T)
+    return coord
 
 def set_coordinate(img, detections):
+    """
+    利用0,1,2三个标签 建立坐标系 绘图
+    """
     tag_id = []
     center_list = []
     for detection in detections:
@@ -126,8 +139,12 @@ def set_coordinate(img, detections):
         center_x = int(sum(point[:, 0]) / 4)
         center_y = int(sum(point[:, 1]) / 4)
         center_list.append(np.array([center_x, center_y]))
+
+        pixel2camera(center_x, center_y, dis)
+
+        cv2.putText(img, str(detection.id), (center_x, center_y - 30), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 0, 255), 4)
+        cv2.putText(img, str(np.round(pixel2camera(center_x, center_y, dis),2).ravel()), (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
         
-        cv2.putText(img, str(detection.id) + ":" + str(dis) + "mm", (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
     line = []
     if 0 in tag_id and 1 in tag_id:
         line.append(np.array([center_list[tag_id.index(0)],  center_list[tag_id.index(1)]], np.int32).reshape((-1, 1, 2)))
@@ -135,4 +152,12 @@ def set_coordinate(img, detections):
         line.append(np.array([center_list[tag_id.index(1)],  center_list[tag_id.index(2)]], np.int32).reshape((-1, 1, 2)))
     if line:
         cv2.polylines(img, line, True, (0, 255, 255), 2)
-    return img
+    center_list_sort = [] # 如果三码齐全 按顺序排好 输出
+    if len(line) == 2:
+        center_list_sort.append(center_list[tag_id.index(0)])
+        center_list_sort.append(center_list[tag_id.index(1)])
+        center_list_sort.append(center_list[tag_id.index(2)])
+    return img, center_list_sort
+
+if __name__ == "__main__":
+    print(str(pixel2camera(100, 200, 60).ravel()))
