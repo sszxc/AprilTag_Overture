@@ -9,12 +9,16 @@ import cv2
 import math
 from scipy.optimize import fsolve
 
-# 相机内参 Oct 15th
+# 相机内参 Oct.15th
 # 1103.26946498287	0	0
 # 0	1102.68487162187	0
 # 347.415754825587	269.670874761139	1
-Kmat = np.array([[1103.26946498287, 0, 347.415754825587],
-                 [0, 1102.68487162187, 269.670874761139],
+# realSense内参 Oct.21st
+# 639.898749592195	0	0
+# 0	638.829623034055	0
+# 327.955458515705	264.288936727808	1
+Kmat = np.array([[639.898749592195, 0, 327.955458515705],
+                 [0, 638.829623034055, 264.288936727808],
                  [0, 0, 1]])
 
 ss = 0.5
@@ -135,15 +139,16 @@ def set_coordinate(img, detections):
         tag_id.append(detection.id)
         point = get_pose_point(detection.homography)  # 用拟合出的变换矩阵再求一次角点
         # dis = round(get_distance(detection.homography, 122274), 2)
-        dis = round(get_distance(detection.homography, 55000),2)  # 边长55mm标签
+        # dis = round(get_distance(detection.homography, 55000), 2)  # 边长55mm标签
+        dis = round(get_distance(detection.homography, 38000), 2)  # 边长64mm标签
         center_x = int(sum(point[:, 0]) / 4)
         center_y = int(sum(point[:, 1]) / 4)
         center_list.append(np.array([center_x, center_y]))
 
         pixel2camera(center_x, center_y, dis)
-
-        cv2.putText(img, str(detection.id), (center_x, center_y - 30), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 0, 255), 4)
-        cv2.putText(img, str(np.round(pixel2camera(center_x, center_y, dis),2).ravel()), (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 255, 0), 2)
+        # 显示id和相机坐标
+        cv2.putText(img, str(detection.id), (center_x, center_y - 20), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 0, 255), 4)
+        cv2.putText(img, str(np.round(pixel2camera(center_x, center_y, dis),2).ravel()), (center_x, center_y), cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 1)
         
     line = []
     if 0 in tag_id and 1 in tag_id:
