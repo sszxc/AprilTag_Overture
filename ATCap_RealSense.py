@@ -1,6 +1,6 @@
 # Author: Xuechao Zhang
 # Date: Oct 9th, 2020
-# Description: 调用 realSense 连续测试
+# Description: 调用 RealSense 连续测试
 
 import CoordAlign as coa
 import tagUtils as tud

@@ -129,9 +129,10 @@ def pixel2camera(center_x, center_y, dis):
     coord = np.matmul(np.linalg.inv(Kmat) * dis, np.array([[center_x, center_y, 1]]).T)
     return coord
 
-def set_coordinate(img, detections):
+def set_coordinate(img, detections, dis_offset = 38000):
     """
     利用0,1,2三个标签 建立坐标系 绘图
+    dis_offset为测距补偿量
     """
     tag_id = []
     center_list = []
@@ -140,7 +141,7 @@ def set_coordinate(img, detections):
         point = get_pose_point(detection.homography)  # 用拟合出的变换矩阵再求一次角点
         # dis = round(get_distance(detection.homography, 122274), 2)
         # dis = round(get_distance(detection.homography, 55000), 2)  # 边长55mm标签
-        dis = round(get_distance(detection.homography, 38000), 2)  # 边长64mm标签
+        dis = round(get_distance(detection.homography, dis_offset), 2)  # 边长64mm标签
         center_x = int(sum(point[:, 0]) / 4)
         center_y = int(sum(point[:, 1]) / 4)
         center_list.append(np.array([center_x, center_y]))
