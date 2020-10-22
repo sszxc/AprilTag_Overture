@@ -55,7 +55,7 @@ def data_conv(R, T):
 
 def cal_affine(tag_list=\
             np.array([[398, 273], [197, 289], [244, 128]], np.float32), \
-        claw_list=\
+            claw_list=\
             np.array([np.array(H_T0)[0:2], np.array(H_T1)[0:2], np.array(H_T2)[0:2]], np.float32)):
     """
     仿射变换

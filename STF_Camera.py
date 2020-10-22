@@ -84,12 +84,12 @@ def set_claw_list():
     return claw_list
 
 
-def C2R_solve(src=np.array([[398, 273, 1]]).T, Affine):
+def C2R_solve(Affine, src=np.array([[398, 273, 1]]).T):
     """
     输入像素坐标系
     输出机器人坐标系
     """
-    return np.dot(Affine_result, src)
+    return np.dot(Affine, src)
 
 if __name__ == "__main__":
     pipeline, align = init_RealSense()
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     _, depth_image, _ = get_RS_frame(pipeline, align, aligned=True)  # 传递深度图
     # target = Dex-net(depth_image)
-    des = C2R_solve(target)  # 解算 加上深度坐标就可以输出
+    des = C2R_solve(Affine_result, target)  # 解算 加上深度坐标就可以输出
 
     # 逃出
     eject_RealSense(pipeline)
