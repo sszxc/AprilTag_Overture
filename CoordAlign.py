@@ -1,6 +1,6 @@
 # Author: Xuechao Zhang
 # Date: Oct 16th, 2020
-# Description: 相机坐标系与机器人坐标系的仿射变换
+# Description: 计算相机坐标系与机器人坐标系的仿射变换
 
 import numpy as np
 import math
@@ -53,19 +53,24 @@ def data_conv(R, T):
     return _44
 
 
-def cal_affine(tag_list=np.array([[398, 273], [197, 289], [244, 128]], np.float32)):
+def cal_affine(tag_list=\
+            np.array([[398, 273], [197, 289], [244, 128]], np.float32), \
+            claw_list=\
+            np.array([np.array(H_T0)[0:2], np.array(H_T1)[0:2], np.array(H_T2)[0:2]], np.float32)):
     """
     仿射变换
+    src 像素坐标
+    dst 机器人坐标
     """
-    src = tag_list
-    # dst = np.array([np.array(H_T0)[0:2], np.array(H_T1)[0:2], np.array(H_T2)[0:2]], np.float32)
-    dst = np.float32([[100, 100], [100, 300], [300, 300]])
+    src = tag_list    
+    dst = claw_list
+    # dst = np.float32([[100, 100], [100, 300], [300, 300]])
     
     Affine_result = cv2.getAffineTransform(src, dst)
     return Affine_result
 
 if __name__ == "__main__":
     Affine_result = cal_affine()
-    print("fhuaihfw")
-
-
+    src = np.array([[398, 273, 1]]).T
+    print(np.dot(Affine_result, src))
+    print("H")
