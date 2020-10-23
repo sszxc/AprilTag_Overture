@@ -11,6 +11,6 @@ https://april.eecs.umich.edu/software/apriltag
 https://github.com/BlackJocker1995/Apriltag_python
 
 ## 基于AprilTag的机器人抓取标定
-使用至少三个AprilTag实现机器人抓取平面标定，`ATCap_Camera.py`、`ATCap_RealSense.py`实现连续图像序列的识别，`CoordAlign.py`实现相机坐标平面与机器人坐标平面的仿射变换。
+使用至少三个AprilTag实现机器人抓取平面标定，`ATCap_Camera.py`、`ATCap_RealSense.py`实现连续图像序列的识别，其中RGB相机、RealSense传感器的内参由MATLAB事先标定，`CoordAlign.py`实现相机坐标平面与机器人坐标平面的仿射变换。
 
 August, 2020

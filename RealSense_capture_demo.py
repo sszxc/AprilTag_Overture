@@ -17,7 +17,7 @@ config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
 # Start streaming
 # pipeline.start(config)
-i = 0
+i = 23
 
 cfg = rs.config()
 cfg.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
@@ -70,8 +70,8 @@ try:
         if k == 27:
             break
         elif k == ord('s'):
-            cv2.imwrite('/media/henry/LocalDisk/Robotics/AprilTag_Overture/realSense_cap/' + str(i) + '.jpg', color_image)
-            np.save('/media/henry/LocalDisk/Robotics/AprilTag_Overture/realSense_cap/' + "depth" + str(i) + '.npy', depth_image)
+            cv2.imwrite('/media/henry/LocalDisk/Robotics/AprilTag_Overture/img/RealSense_cap/' + str(i) + '.jpg', color_image)
+            np.save('/media/henry/LocalDisk/Robotics/AprilTag_Overture/img/RealSense_cap/' + "depth" + str(i) + '.npy', depth_image)
             i += 1
         # Show images
         cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)

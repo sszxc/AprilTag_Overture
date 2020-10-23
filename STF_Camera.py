@@ -81,10 +81,15 @@ def set_claw_list():
     记录拖动示教得到的claw_list
     需要和上位机操作一下这部分代码
     """
+    # 拖动示教 机器人末端触碰对应Tag时记录示教器给出的坐标
+    H_T0 = [0.731, -0.036, 0.001]
+    H_T1 = [0.778, 0.195, 0.004]
+    H_T2 = [0.513, 0.244, -0.001]
+    claw_list = np.array([np.array(H_T0)[0:2], np.array(H_T1)[0:2], np.array(H_T2)[0:2]], np.float32)
     return claw_list
 
 
-def C2R_solve(Affine, src=np.array([[398, 273, 1]]).T):
+def C2R_solve(Affine, src):
     """
     输入像素坐标系
     输出机器人坐标系
@@ -101,12 +106,14 @@ if __name__ == "__main__":
         tag_list, _ = AprilTag_detection(color_image) # Tag检测
         if tag_list:
             break
-    Affine_result = coa.cal_affine(np.array(tag_list, np.float32))  # claw_list暂时没加
+    Affine_result = coa.cal_affine(np.array(tag_list, np.float32), claw_list)  # claw_list暂时没加
     # 结束标定阶段
 
     _, depth_image, _ = get_RS_frame(pipeline, align, aligned=True)  # 传递深度图
     # target = Dex-net(depth_image)
+    target = np.array([[475, 160, 1]]).T
     des = C2R_solve(Affine_result, target)  # 解算 加上深度坐标就可以输出
 
     # 逃出
     eject_RealSense(pipeline)
+    print("finish")
