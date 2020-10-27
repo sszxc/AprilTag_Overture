@@ -31,3 +31,8 @@ if __name__ == "__main__":
     print('RGBA = \n {}'.format(RGBA))
     print('RGBA[:, :, 3] = \n {}'.format(RGBA[:, :, 3]))
 
+    H_T0 = [0.731, -0.036, 0.001]
+    H_T1 = [0.778, 0.195, 0.004]
+    H_T2 = [0.513, 0.244, -0.001]
+    claw_list = np.array([np.array(H_T0)[0:2], np.array(H_T1)[0:2], np.array(H_T2)[0:2]], np.float32)
+    depth_align = np.array(H_T0)[3]
