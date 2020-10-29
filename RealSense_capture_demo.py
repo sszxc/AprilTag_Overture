@@ -64,7 +64,7 @@ try:
         depth_image = np.asanyarray(aligned_depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
         depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
-
+        images = np.hstack((color_image, depth_colormap))
 
         k = cv2.waitKey(1)
         if k == 27:
@@ -75,7 +75,7 @@ try:
             i += 1
         # Show images
         cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
-        cv2.imshow('RealSense', color_image)
+        cv2.imshow('RealSense', images)
         cv2.waitKey(1)
 
 finally:
