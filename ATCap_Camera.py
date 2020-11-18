@@ -12,7 +12,7 @@ import CoordAlign as coa
 if __name__ == "__main__":
     ap = Apriltag()
     ap.create_detector(debug=False)
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     fps_real = fps = 24
     
     while (True):  # 创建无限循环，用于播放每一帧图像        
